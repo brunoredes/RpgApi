@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using RpgApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(options =>
 {
-   options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoSomee")); //ConexaoLocal ou ConexaoSomee
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoSomee")); //ConexaoLocal ou ConexaoSomee
 });
 
 builder.Services.AddControllers();

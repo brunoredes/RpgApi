@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RpgApi.Data;
@@ -57,7 +53,8 @@ namespace RpgApi.Controllers
         }
 
         [HttpGet("GetByPerfil/{userId}")]
-        public async Task<IActionResult> GetByPerfilAsync(int userId)  {
+        public async Task<IActionResult> GetByPerfilAsync(int userId)
+        {
             try
             {
                 Usuario usuario = await _context.TB_USUARIOS
@@ -66,32 +63,33 @@ namespace RpgApi.Controllers
                 List<Personagem> lista = new List<Personagem>();
 
                 if (usuario.Perfil == "Admin")
-                    lista = await _context.TB_PERSONAGENS.ToListAsync();  
+                    lista = await _context.TB_PERSONAGENS.ToListAsync();
                 else
                     lista = await _context.TB_PERSONAGENS
-                        .Where(p => p.Usuario.Id == userId).ToListAsync();  return Ok(lista);
+                        .Where(p => p.Usuario.Id == userId).ToListAsync(); return Ok(lista);
             }
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-        } 
+        }
 
         [HttpGet("GetByNomeAproximado/{nomePersonagem}")]
-        public async Task<IActionResult> GetByNomeAproximado(string nomePersonagem)  {
+        public async Task<IActionResult> GetByNomeAproximado(string nomePersonagem)
+        {
             try
             {
-                List<Personagem> lista = await _context.TB_PERSONAGENS 
+                List<Personagem> lista = await _context.TB_PERSONAGENS
                     .Where(p => p.Nome.ToLower().Contains(nomePersonagem.ToLower()))
                     .ToListAsync();
-                    
+
                 return Ok(lista);
             }
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-        } 
+        }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
@@ -162,10 +160,10 @@ namespace RpgApi.Controllers
                 var attach = _context.Attach(personagem);
 
                 attach.Property(x => x.Id).IsModified = false;
-                attach.Property(x => x.FotoPersonagem).IsModified = true;  int linhasAfetadas = await _context.SaveChangesAsync();  return Ok(linhasAfetadas);
+                attach.Property(x => x.FotoPersonagem).IsModified = true; int linhasAfetadas = await _context.SaveChangesAsync(); return Ok(linhasAfetadas);
             }
             catch (System.Exception ex)
-            { 
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -176,9 +174,9 @@ namespace RpgApi.Controllers
             try
             {
                 int linhasAfetadas = 0;
-                Personagem pEncontrado = await _context.TB_PERSONAGENS.FirstOrDefaultAsync(pBusca => pBusca.Id == p.Id);  pEncontrado.PontosVida = 100;
+                Personagem pEncontrado = await _context.TB_PERSONAGENS.FirstOrDefaultAsync(pBusca => pBusca.Id == p.Id); pEncontrado.PontosVida = 100;
 
-                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p",  pAtualizar => pAtualizar.PontosVida);
+                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p", pAtualizar => pAtualizar.PontosVida);
 
                 linhasAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhasAfetadas);
@@ -194,34 +192,35 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Personagem pEncontrado = await _context.TB_PERSONAGENS.FirstOrDefaultAsync(pBusca => pBusca.Id == p.Id);  pEncontrado.Disputas = 0;
+                Personagem pEncontrado = await _context.TB_PERSONAGENS.FirstOrDefaultAsync(pBusca => pBusca.Id == p.Id); pEncontrado.Disputas = 0;
 
                 pEncontrado.Vitorias = 0;
                 pEncontrado.Derrotas = 0;
                 int linhasAfetadas = 0;
 
-                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p",  pAtualizar => pAtualizar.Disputas,
+                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p", pAtualizar => pAtualizar.Disputas,
                 pAtualizar => pAtualizar.Vitorias,
                 pAtualizar => pAtualizar.Derrotas);
 
-                linhasAfetadas = await _context.SaveChangesAsync();  return Ok(linhasAfetadas);
+                linhasAfetadas = await _context.SaveChangesAsync(); return Ok(linhasAfetadas);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message); 
-            } 
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("ZerarRankingRestaurarVidas")]
-        public async Task<IActionResult> ZerarRankingRestaurarVidasAsync()  {
+        public async Task<IActionResult> ZerarRankingRestaurarVidasAsync()
+        {
             try
             {
                 List<Personagem> lista =
                 await _context.TB_PERSONAGENS.ToListAsync();
                 foreach (Personagem p in lista)
                 {
-                await ZerarRankingAsync(p);
-                await RestaurarPontosVidaAsync(p);
+                    await ZerarRankingAsync(p);
+                    await RestaurarPontosVidaAsync(p);
                 }
                 return Ok("Disputas e pontos de vida resetados");
             }
@@ -229,7 +228,7 @@ namespace RpgApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        } 
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -247,7 +246,7 @@ namespace RpgApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    
+
         [HttpGet("GetUsuarioPersonagem/{id}")] //Buscar pelo id
         public async Task<IActionResult> GetUsuarioPersonagem(int id)
         {

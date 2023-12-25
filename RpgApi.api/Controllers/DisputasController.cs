@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using RpgApi.Data;
 using RpgApi.Models;
-using System.Linq;
+using System.Text;
 
 namespace RpgApi.Controllers
 {
@@ -13,7 +12,8 @@ namespace RpgApi.Controllers
     {
         private readonly DataContext _context;
 
-        public DisputasController(DataContext context){
+        public DisputasController(DataContext context)
+        {
             _context = context;
         }
 
@@ -33,10 +33,11 @@ namespace RpgApi.Controllers
 
                 dano -= new Random().Next(oponente.Defesa);
 
-                if(dano > 0)
+                if (dano > 0)
                     oponente.PontosVida -= (int)dano;
 
-                if(oponente.PontosVida <= 0){
+                if (oponente.PontosVida <= 0)
+                {
                     d.Narracao = $"{oponente.Nome} foi derrotado!";
                     atacante.Vitorias = atacante.Vitorias + 1;
                     oponente.Derrotas = oponente.Derrotas + 1;
@@ -66,7 +67,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                
+
                 return BadRequest(ex.Message);
             }
         }
@@ -91,23 +92,24 @@ namespace RpgApi.Controllers
                         phBusca.HabilidadeId == d.HabilidadeId &&
                         phBusca.PersonagemId == d.AtacanteId
                     );
-                
-                if(ph == null)
+
+                if (ph == null)
                     d.Narracao = $"{atacante.Nome} não possui esta habilidade";
                 else
                 {
                     int dano = ph.Habilidade.Dano + (new Random().Next(atacante.Inteligencia));
                     dano -= new Random().Next(oponente.Defesa);
 
-                    if(dano > 0)
+                    if (dano > 0)
                         oponente.PontosVida -= (int)dano;
 
-                    if(oponente.PontosVida <= 0){
+                    if (oponente.PontosVida <= 0)
+                    {
                         d.Narracao = $"{oponente.Nome} foi derrotado!";
                         atacante.Vitorias = atacante.Vitorias + 1;
                         oponente.Derrotas = oponente.Derrotas + 1;
                     }
-                        
+
 
                     oponente.Disputas = oponente.Disputas + 1;
                     atacante.Disputas = atacante.Disputas + 1;
@@ -135,7 +137,7 @@ namespace RpgApi.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
-            }    
+            }
         }
 
         [HttpPost("DisputaEmGrupo")]
@@ -149,12 +151,12 @@ namespace RpgApi.Controllers
                     .Include(p => p.Arma)
                     .Include(p => p.PersonagemHabilidades).ThenInclude(ph => ph.Habilidade)
                     .Where(p => d.ListaIdPersonagem.Contains(p.Id)).ToListAsync();
-                
+
                 int qtdPersonagensVivos = personagens.FindAll(p => p.PontosVida > 0).Count;
 
-                while(qtdPersonagensVivos > 1)
+                while (qtdPersonagensVivos > 1)
                 {
-                    List<Personagem> atacantes  = personagens.Where(p => p.PontosVida > 0).ToList();
+                    List<Personagem> atacantes = personagens.Where(p => p.PontosVida > 0).ToList();
                     Personagem atacante = atacantes[new Random().Next(atacantes.Count)];
                     d.AtacanteId = atacante.Id;
 
@@ -165,7 +167,7 @@ namespace RpgApi.Controllers
                     int dano = 0;
                     string ataqueUsado = string.Empty;
                     string resultado = string.Empty;
-                
+
                     bool ataqueUsaArma = new Random().Next(1) == 0;
 
                     if (ataqueUsaArma && atacante.Arma != null)
@@ -174,7 +176,7 @@ namespace RpgApi.Controllers
                         dano -= new Random().Next(oponente.Defesa);
                         ataqueUsado = atacante.Arma.Nome;
 
-                        if(dano > 0)
+                        if (dano > 0)
                             oponente.PontosVida = oponente.PontosVida - (int)dano;
 
                         resultado =
@@ -183,7 +185,8 @@ namespace RpgApi.Controllers
                         d.Resultados.Add(resultado);
 
                     }
-                    else if (atacante.PersonagemHabilidades.Count != 0){
+                    else if (atacante.PersonagemHabilidades.Count != 0)
+                    {
                         int sorteioHabilidadeId = new Random().Next(atacante.PersonagemHabilidades.Count);
                         Habilidade habilidadeEscolhida = atacante.PersonagemHabilidades[sorteioHabilidadeId].Habilidade;
                         ataqueUsado = habilidadeEscolhida.Nome;
@@ -191,8 +194,8 @@ namespace RpgApi.Controllers
                         dano = habilidadeEscolhida.Dano + new Random().Next(atacante.Inteligencia);
                         dano -= new Random().Next(oponente.Defesa);
 
-                        if(dano > 0)
-                            oponente.PontosVida -=  (int)dano;
+                        if (dano > 0)
+                            oponente.PontosVida -= (int)dano;
 
                         resultado =
                             string.Format($"{atacante.Nome} atacou {oponente.Nome} usando {ataqueUsado} com um dano de {dano}. ");
@@ -200,12 +203,12 @@ namespace RpgApi.Controllers
                         d.Resultados.Add(resultado);
                     }
 
-                    if(!string.IsNullOrEmpty(ataqueUsado))
+                    if (!string.IsNullOrEmpty(ataqueUsado))
                     {
-                        atacante.Vitorias ++;
-                        atacante.Disputas ++;
-                        oponente.Derrotas ++;
-                        oponente.Disputas ++;
+                        atacante.Vitorias++;
+                        atacante.Disputas++;
+                        oponente.Derrotas++;
+                        oponente.Disputas++;
 
                         d.Id = 0;
                         d.DataDisputa = DateTime.Now;
@@ -215,11 +218,11 @@ namespace RpgApi.Controllers
 
                     qtdPersonagensVivos = personagens.FindAll(p => p.PontosVida > 0).Count;
 
-                    if(qtdPersonagensVivos == 1)
+                    if (qtdPersonagensVivos == 1)
                     {
                         string resultadoFinal =
                             $"{atacante.Nome.ToUpper()} é CAMPEÃO com {atacante.PontosVida} pontos de vida restantes";
-                        
+
                         d.Narracao += resultadoFinal;
                         d.Resultados.Add(resultadoFinal);
                         break;
@@ -242,7 +245,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                List<Disputa> disputas = await _context.TB_DISPUTAS.ToListAsync();  _context.TB_DISPUTAS.RemoveRange(disputas);
+                List<Disputa> disputas = await _context.TB_DISPUTAS.ToListAsync(); _context.TB_DISPUTAS.RemoveRange(disputas);
                 await _context.SaveChangesAsync();
                 return Ok("Disputas apagadas");
             }
@@ -251,7 +254,7 @@ namespace RpgApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    
+
         [HttpGet("Listar")]
         public async Task<IActionResult> ListarAsync()
         {

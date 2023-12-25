@@ -1,6 +1,3 @@
-
-
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using RpgApi.Models;
 using RpgApi.Models.Enuns;
@@ -24,27 +21,34 @@ namespace RpgApi.Controllers
             new Personagem() { Id = 7, Nome = "Radagast", PontosVida=106, Forca=25, Defesa=11, Inteligencia=35, Classe=ClasseEnum.Mago }
         };
 
-        
+
         //a)
         [HttpGet("GetbyNome/{nome}")]
         public IActionResult GetbyNome(string nome)
         {
             List<Personagem> listaBusca = personagens.FindAll(p => p.Nome.Equals(nome));
-                
-                if(listaBusca.Count != 0 ){
-                    return Ok(listaBusca);
-                }else {
-                    return NotFound("Personagem Não Encontrado!!! ;(");
-                }                  
+
+            if (listaBusca.Count != 0)
+            {
+                return Ok(listaBusca);
+            }
+            else
+            {
+                return NotFound("Personagem Não Encontrado!!! ;(");
+            }
         }
 
         //b)
         [HttpPost("PostValidacao")]
-        public IActionResult PostValidacao(Personagem NovoPersonagem){
+        public IActionResult PostValidacao(Personagem NovoPersonagem)
+        {
 
-            if(NovoPersonagem.Defesa < 10 || NovoPersonagem.Inteligencia > 30){
+            if (NovoPersonagem.Defesa < 10 || NovoPersonagem.Inteligencia > 30)
+            {
                 return BadRequest("Personagem não Permitido!!\n Defesa < 10 ou Inteligência > 30.");
-            }else{
+            }
+            else
+            {
                 personagens.Add(NovoPersonagem);
                 return Ok(personagens);
             }
@@ -52,11 +56,15 @@ namespace RpgApi.Controllers
 
         //c)
         [HttpPost("PostValidacaoMago")]
-        public IActionResult PostValidacaoMago(Personagem NovoPersonagem){
+        public IActionResult PostValidacaoMago(Personagem NovoPersonagem)
+        {
 
-            if(NovoPersonagem.Classe == ClasseEnum.Mago && NovoPersonagem.Defesa < 35){
+            if (NovoPersonagem.Classe == ClasseEnum.Mago && NovoPersonagem.Defesa < 35)
+            {
                 return BadRequest("Personagens Mago, não são permitidos com Defesa < 35");
-            }else{
+            }
+            else
+            {
                 personagens.Add(NovoPersonagem);
                 return Ok(personagens);
             }
@@ -70,7 +78,7 @@ namespace RpgApi.Controllers
 
             List<Personagem> OrdenadoPontosVida = RemoveCavaleiro.OrderByDescending(x => x.PontosVida).ToList();
 
-            return Ok(OrdenadoPontosVida);            
+            return Ok(OrdenadoPontosVida);
         }
 
         //e)
@@ -93,7 +101,7 @@ namespace RpgApi.Controllers
             return Ok(listaClasse);
         }
 
- 
+
 
     }
 }
