@@ -57,7 +57,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
                 List<Personagem> lista = new List<Personagem>();
@@ -114,7 +114,7 @@ namespace RpgApi.Controllers
                 {
                     throw new Exception("Pontos de vida não pode ser maior que 100");
                 }
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(x => x.Id == novoPersonagem.UsuarioId);
 
                 novoPersonagem.Usuario = usuario;

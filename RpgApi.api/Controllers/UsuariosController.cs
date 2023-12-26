@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RpgApi.api.Services;
 using RpgApi.Data;
 using RpgApi.Models;
 using RpgApi.Utils;
@@ -19,11 +20,7 @@ namespace RpgApi.Controllers
 
         private async Task<bool> UsuarioExistente(string username)
         {
-            if (await _context.TB_USUARIOS.AnyAsync(x => x.Username.ToLower() == username.ToLower()))
-            {
-                return true;
-            }
-            return false;
+            return await _context.Usuarios.AnyAsync(x => x.Username.ToLower() == username.ToLower());
         }
 
         [HttpGet("{usuarioId}")]
@@ -31,7 +28,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Id == usuarioId);
 
                 return Ok(usuario);
@@ -47,7 +44,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Username.ToLower() == login.ToLower()); return Ok(usuario);
             }
             catch (System.Exception ex)
@@ -57,21 +54,28 @@ namespace RpgApi.Controllers
         }
 
         [HttpPost("Registrar")]
-        public async Task<IActionResult> RegistrarUsuario(Usuario user)
+        public async Task<IActionResult> RegistrarUsuario(UsuarioInput user)
         {
             try
             {
-                if (await UsuarioExistente(user.Username))
-                    throw new System.Exception("Nome de usuario já existe");
+                HashService hashService = new HashService();
+                var salt = hashService.CreateSalt();
+                bool usuarioExistente = await UsuarioExistente(user.Username);
+                if (usuarioExistente)
+                {
+                    return BadRequest();
+                }
+                Usuario novoUsuario = new Usuario
+                {
+                    Username = user.Username,
+                    PasswordHash = hashService.HashPassword(user.PasswordString, salt),
+                    PasswordSalt = salt
+                };
 
-                Criptografia.CriarPasswordHash(user.PasswordString, out byte[] hash, out byte[] salt);
-                user.PasswordString = string.Empty;
-                user.PasswordHash = hash;
-                user.PasswordSalt = salt;
-                await _context.TB_USUARIOS.AddAsync(user);
+                await _context.Usuarios.AddAsync(novoUsuario);
                 await _context.SaveChangesAsync();
 
-                return Ok(user.Id);
+                return Created("/Registrar", novoUsuario.Id);
             }
             catch (System.Exception ex)
             {
@@ -80,20 +84,21 @@ namespace RpgApi.Controllers
         }
 
         [HttpPost("Autenticar")]
-        public async Task<IActionResult> AutenticarUsuario(Usuario credenciais)
+        public async Task<IActionResult> AutenticarUsuario(UsuarioInput credenciais)
         {
             try
             {
-                Usuario? usuario = await _context.TB_USUARIOS
+                Usuario? usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(x => x.Username.ToLower().Equals(credenciais.Username.ToLower()));
+                var hashService = new HashService();
 
                 if (usuario == null)
                 {
-                    throw new System.Exception("Usuario não encontrado.");
+                    return NotFound("Usuario não encontrado.");
                 }
-                else if (!Criptografia.VerificarPasswordHash(credenciais.PasswordString, usuario.PasswordHash, usuario.PasswordSalt))
+                if (!hashService.VerifyPassword(credenciais.PasswordString, usuario.PasswordHash, usuario.PasswordSalt))
                 {
-                    throw new System.Exception("Senha incorreta.");
+                    throw new System.Exception(usuario.PasswordHash.ToString());
                 }
                 else
                 {
@@ -114,7 +119,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario? usuario = await _context.TB_USUARIOS
+                Usuario? usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(x => x.Username.ToLower().Equals(credenciais.Username.ToLower()));
 
                 if (usuario == null)
@@ -123,10 +128,10 @@ namespace RpgApi.Controllers
                 }
                 else
                 {
-                    Criptografia.CriarPasswordHash(credenciais.PasswordString, out byte[] hash, out byte[] salt);
-                    usuario.PasswordString = string.Empty;
-                    usuario.PasswordHash = hash;
-                    usuario.PasswordSalt = salt;
+                    //Criptografia.CriarPasswordHash(credenciais.PasswordString, out byte[] hash, out byte[] salt);
+                    //usuario.PasswordString = string.Empty;
+                    //usuario.PasswordHash = hash;
+                    //usuario.PasswordSalt = salt;
                     await _context.SaveChangesAsync();
 
                     string message = $"Senha do '{usuario.Username}' alterada com sucesso!";
@@ -145,7 +150,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Id == u.Id);
 
                 usuario.Email = u.Email;
@@ -168,7 +173,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Id == u.Id);
 
                 usuario.Foto = u.Foto;
@@ -190,7 +195,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.TB_USUARIOS
+                Usuario usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(x => x.Id == u.Id);
 
                 usuario.Latitude = u.Latitude;
@@ -215,7 +220,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                List<Usuario> lista = await _context.TB_USUARIOS.ToListAsync();
+                List<Usuario> lista = await _context.Usuarios.ToListAsync();
                 return Ok(lista);
             }
             catch (System.Exception ex)

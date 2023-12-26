@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using RpgApi.api.Services;
 using RpgApi.Models;
 using RpgApi.Models.Enuns;
 using RpgApi.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace RpgApi.Data
 {
@@ -14,12 +16,10 @@ namespace RpgApi.Data
 
         public DbSet<Personagem> TB_PERSONAGENS { get; set; }
         public DbSet<Arma> TB_ARMAS { get; set; }
-        public DbSet<Usuario> TB_USUARIOS { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Habilidade> TB_HABILIDADES { get; set; }
         public DbSet<PersonagemHabilidade> TB_PERSONAGENS_HABILIDADES { get; set; }
         public DbSet<Disputa> TB_DISPUTAS { get; set; }
-
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -68,16 +68,17 @@ namespace RpgApi.Data
                 new PersonagemHabilidade() { PersonagemId = 7, HabilidadeId = 3 }
             );
 
-            //Início da criação do usuário padrão.
-            Usuario user = new Usuario();
-            Criptografia.CriarPasswordHash("123456", out byte[] hash, out byte[] salt);
+
+            Usuario user = new();
+            HashService hashService = new HashService();
+            var salt = hashService.CreateSalt();
+            byte[] novaSenha = hashService.HashPassword("123456", salt);
             user.Id = 1;
-            user.Username = "UsuarioAdmin";
-            user.PasswordString = string.Empty;
-            user.PasswordHash = hash;
+            user.Username = "Admin";
+            user.PasswordHash = novaSenha;
             user.PasswordSalt = salt;
             user.Perfil = "Admin";
-            user.Email = "seuEmail@gmail.com";
+            user.Email = "admin@hasrpgapi.com";
             user.Latitude = -23.5200241;
             user.Longitude = -46.596498;
 
@@ -86,13 +87,34 @@ namespace RpgApi.Data
 
             //Define que se o Perfil não for informado, o valor padrão será jogador
             modelBuilder.Entity<Usuario>().Property(u => u.Perfil).HasDefaultValue("Jogador");
+
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.ToTable("usuarios");
+                entity.HasKey(u => u.Id);
+                
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd();
+                
+                entity.Property(u => u.Username)
+                    .IsRequired()
+                    .HasMaxLength(128);
+                
+                entity.Property(u => u.PasswordHash)
+                    .IsRequired();
+
+                entity.Property(u => u.PasswordSalt)
+                    .IsRequired();
+                
+                entity.HasMany(u => u.Personagens)
+                    .WithOne(p => p.Usuario)
+                    .HasForeignKey(u => u.UsuarioId)
+                    .HasConstraintName("FK_PERSONAGENS_USUARIO");
+
+                entity.Property(u => u.Perfil)
+                    .HasDefaultValue("Jogador");
+            });
         }
-
-
-
-
-
-
 
     }
 }
