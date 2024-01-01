@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RpgApi.Data;
-using RpgApi.Models;
+using RpgApi.api.Data;
+using RpgApi.api.Models;
 using System.Text;
 
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -29,12 +29,12 @@ namespace RpgApi.Controllers
                 Personagem oponente = await _context.TB_PERSONAGENS
                     .FirstOrDefaultAsync(p => p.Id == d.OponenteId);
 
-                int dano = atacante.Arma.Dano + (new Random().Next(atacante.Forca));
+                int dano = atacante.Arma.Dano + new Random().Next(atacante.Forca);
 
                 dano -= new Random().Next(oponente.Defesa);
 
                 if (dano > 0)
-                    oponente.PontosVida -= (int)dano;
+                    oponente.PontosVida -= dano;
 
                 if (oponente.PontosVida <= 0)
                 {
@@ -65,7 +65,7 @@ namespace RpgApi.Controllers
 
                 return Ok(d);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
@@ -97,11 +97,11 @@ namespace RpgApi.Controllers
                     d.Narracao = $"{atacante.Nome} não possui esta habilidade";
                 else
                 {
-                    int dano = ph.Habilidade.Dano + (new Random().Next(atacante.Inteligencia));
+                    int dano = ph.Habilidade.Dano + new Random().Next(atacante.Inteligencia);
                     dano -= new Random().Next(oponente.Defesa);
 
                     if (dano > 0)
-                        oponente.PontosVida -= (int)dano;
+                        oponente.PontosVida -= dano;
 
                     if (oponente.PontosVida <= 0)
                     {
@@ -134,7 +134,7 @@ namespace RpgApi.Controllers
 
                 return Ok(d);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -177,7 +177,7 @@ namespace RpgApi.Controllers
                         ataqueUsado = atacante.Arma.Nome;
 
                         if (dano > 0)
-                            oponente.PontosVida = oponente.PontosVida - (int)dano;
+                            oponente.PontosVida = oponente.PontosVida - dano;
 
                         resultado =
                             string.Format($"{atacante.Nome} atacou {oponente.Nome} usando {ataqueUsado} com um dano de {dano}. ");
@@ -195,7 +195,7 @@ namespace RpgApi.Controllers
                         dano -= new Random().Next(oponente.Defesa);
 
                         if (dano > 0)
-                            oponente.PontosVida -= (int)dano;
+                            oponente.PontosVida -= dano;
 
                         resultado =
                             string.Format($"{atacante.Nome} atacou {oponente.Nome} usando {ataqueUsado} com um dano de {dano}. ");
@@ -249,7 +249,7 @@ namespace RpgApi.Controllers
                 await _context.SaveChangesAsync();
                 return Ok("Disputas apagadas");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -263,7 +263,7 @@ namespace RpgApi.Controllers
                 List<Disputa> disputas = await _context.TB_DISPUTAS.ToListAsync();
                 return Ok(disputas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

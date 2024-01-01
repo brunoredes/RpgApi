@@ -1,18 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using RpgApi.api.Models;
+using RpgApi.api.Models.Enuns;
 using RpgApi.api.Services;
-using RpgApi.Models;
-using RpgApi.Models.Enuns;
-using RpgApi.Utils;
-using System.ComponentModel.DataAnnotations;
 
-namespace RpgApi.Data
+namespace RpgApi.api.Data
 {
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-
-        }
+        { }
 
         public DbSet<Personagem> TB_PERSONAGENS { get; set; }
         public DbSet<Arma> TB_ARMAS { get; set; }
@@ -92,20 +88,20 @@ namespace RpgApi.Data
             {
                 entity.ToTable("usuarios");
                 entity.HasKey(u => u.Id);
-                
+
                 entity.Property(u => u.Id)
                     .ValueGeneratedOnAdd();
-                
+
                 entity.Property(u => u.Username)
                     .IsRequired()
                     .HasMaxLength(128);
-                
+
                 entity.Property(u => u.PasswordHash)
                     .IsRequired();
 
                 entity.Property(u => u.PasswordSalt)
                     .IsRequired();
-                
+
                 entity.HasMany(u => u.Personagens)
                     .WithOne(p => p.Usuario)
                     .HasForeignKey(u => u.UsuarioId)

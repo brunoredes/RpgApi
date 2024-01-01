@@ -1,4 +1,4 @@
-namespace RpgApi.Models
+namespace RpgApi.api.Models
 {
     public class PersonagemHabilidade
     {

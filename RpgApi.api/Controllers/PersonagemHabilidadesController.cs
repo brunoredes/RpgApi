@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RpgApi.Data;
-using RpgApi.Models;
+using RpgApi.api.Data;
+using RpgApi.api.Models;
 
-
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -28,13 +27,13 @@ namespace RpgApi.Controllers
                     .FirstOrDefaultAsync(p => p.Id == novoPersonagemHabilidade.PersonagemId);
 
                 if (personagem == null)
-                    throw new System.Exception("Personagem não encontrado para o Id informado");
+                    throw new Exception("Personagem não encontrado para o Id informado");
 
                 Habilidade habilidade = await _context.TB_HABILIDADES
                     .FirstOrDefaultAsync(h => h.Id == novoPersonagemHabilidade.HabilidadeId);
 
                 if (habilidade == null)
-                    throw new System.Exception("Habilidade não encontrada");
+                    throw new Exception("Habilidade não encontrada");
 
                 PersonagemHabilidade ph = new PersonagemHabilidade();
                 ph.Personagem = personagem;
@@ -44,7 +43,7 @@ namespace RpgApi.Controllers
 
                 return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -55,12 +54,12 @@ namespace RpgApi.Controllers
         {
             try
             {
-                PersonagemHabilidade? validarPH = await _context.TB_PERSONAGENS_HABILIDADES
+                PersonagemHabilidade validarPH = await _context.TB_PERSONAGENS_HABILIDADES
                     .FirstOrDefaultAsync(p => p.PersonagemId == id);
 
                 if (validarPH == null)
                 {
-                    throw new System.Exception("Personagem não existe");
+                    throw new Exception("Personagem não existe");
                 }
                 else
                 {
@@ -83,7 +82,7 @@ namespace RpgApi.Controllers
                     return Ok(busca.ToList());
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -97,7 +96,7 @@ namespace RpgApi.Controllers
                 List<Habilidade> listaHabilidades = await _context.TB_HABILIDADES.ToListAsync();
                 return Ok(listaHabilidades);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -108,14 +107,14 @@ namespace RpgApi.Controllers
         {
             try
             {
-                PersonagemHabilidade? personagemEncontrado = await _context.TB_PERSONAGENS_HABILIDADES
+                PersonagemHabilidade personagemEncontrado = await _context.TB_PERSONAGENS_HABILIDADES
                     .FirstOrDefaultAsync(pe =>
                         pe.PersonagemId == credenciais.PersonagemId
                         &&
                         pe.HabilidadeId == credenciais.HabilidadeId);
 
                 if (personagemEncontrado == null)
-                    throw new System.Exception("Personagem ou habilidade não encontrada");
+                    throw new Exception("Personagem ou habilidade não encontrada");
                 else
                 {
                     _context.TB_PERSONAGENS_HABILIDADES.Remove(personagemEncontrado);
@@ -124,7 +123,7 @@ namespace RpgApi.Controllers
                     return Ok(message);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

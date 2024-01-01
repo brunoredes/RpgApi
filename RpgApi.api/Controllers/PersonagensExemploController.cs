@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RpgApi.Models;
-using RpgApi.Models.Enuns;
+using RpgApi.api.Models;
+using RpgApi.api.Models.Enuns;
 
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[Controller]")]

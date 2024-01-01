@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "RpgApi - Dev": {
+    "RpgApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -19,12 +19,12 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "RpgApi - Production": {
+    "RpgApi-Production": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5164",
+      "applicationUrl": "http://localhost:8800",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }

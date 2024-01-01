@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RpgApi.api.Data;
+using RpgApi.api.Models;
 using RpgApi.api.Services;
-using RpgApi.Data;
-using RpgApi.Models;
-using RpgApi.Utils;
 
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -33,7 +32,7 @@ namespace RpgApi.Controllers
 
                 return Ok(usuario);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -45,9 +44,11 @@ namespace RpgApi.Controllers
             try
             {
                 Usuario usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(x => x.Username.ToLower() == login.ToLower()); return Ok(usuario);
+                .FirstOrDefaultAsync(x => x.Username.ToLower() == login.ToLower());
+
+                return Ok(usuario);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -63,7 +64,7 @@ namespace RpgApi.Controllers
                 bool usuarioExistente = await UsuarioExistente(user.Username);
                 if (usuarioExistente)
                 {
-                    return BadRequest();
+                    return BadRequest("Usuário já existe");
                 }
                 Usuario novoUsuario = new Usuario
                 {
@@ -77,7 +78,7 @@ namespace RpgApi.Controllers
 
                 return Created("/Registrar", novoUsuario.Id);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -88,7 +89,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario? usuario = await _context.Usuarios
+                Usuario usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(x => x.Username.ToLower().Equals(credenciais.Username.ToLower()));
                 var hashService = new HashService();
 
@@ -98,7 +99,7 @@ namespace RpgApi.Controllers
                 }
                 if (!hashService.VerifyPassword(credenciais.PasswordString, usuario.PasswordHash, usuario.PasswordSalt))
                 {
-                    throw new System.Exception(usuario.PasswordHash.ToString());
+                    throw new Exception(usuario.PasswordHash.ToString());
                 }
                 else
                 {
@@ -108,7 +109,7 @@ namespace RpgApi.Controllers
                     return Ok(usuario);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -119,17 +120,16 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Usuario? usuario = await _context.Usuarios
+                Usuario usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(x => x.Username.ToLower().Equals(credenciais.Username.ToLower()));
 
                 if (usuario == null)
                 {
-                    throw new System.Exception("Usuario não encontrado.");
+                    throw new Exception("Usuario não encontrado.");
                 }
                 else
                 {
                     //Criptografia.CriarPasswordHash(credenciais.PasswordString, out byte[] hash, out byte[] salt);
-                    //usuario.PasswordString = string.Empty;
                     //usuario.PasswordHash = hash;
                     //usuario.PasswordSalt = salt;
                     await _context.SaveChangesAsync();
@@ -139,7 +139,7 @@ namespace RpgApi.Controllers
                 }
 
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -162,7 +162,7 @@ namespace RpgApi.Controllers
                 int linhasAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -184,7 +184,7 @@ namespace RpgApi.Controllers
 
                 int linhasAfetadas = await _context.SaveChangesAsync(); return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -209,7 +209,7 @@ namespace RpgApi.Controllers
                 int linhasAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -223,7 +223,7 @@ namespace RpgApi.Controllers
                 List<Usuario> lista = await _context.Usuarios.ToListAsync();
                 return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

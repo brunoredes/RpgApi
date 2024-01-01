@@ -1,12 +1,14 @@
-﻿using RpgApi.Services.Usuarios;
+﻿using RpgApi.api.Services;
+using RpgApi.api.Services.Usuarios;
 
-namespace RpgApi.Config
+namespace RpgApi.api.Config
 {
     public static class ScopedServicesList
     {
         public static void RegisterScopedServices(WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IUsuariosService, UsuarioService>();
+            builder.Services.AddScoped<IHashService, HashService>();
+            builder.Services.AddScoped<IUsuariosService, UsuariosService>();
         }
     }
 }

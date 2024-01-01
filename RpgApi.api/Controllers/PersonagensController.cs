@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RpgApi.Data;
-using RpgApi.Models;
+using RpgApi.api.Data;
+using RpgApi.api.Models;
 
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
@@ -30,7 +30,7 @@ namespace RpgApi.Controllers
 
                 return Ok(p);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -46,7 +46,7 @@ namespace RpgApi.Controllers
 
                 return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -68,7 +68,7 @@ namespace RpgApi.Controllers
                     lista = await _context.TB_PERSONAGENS
                         .Where(p => p.Usuario.Id == userId).ToListAsync(); return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -85,7 +85,7 @@ namespace RpgApi.Controllers
 
                 return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -99,7 +99,7 @@ namespace RpgApi.Controllers
                 List<Personagem> lista = await _context.TB_PERSONAGENS.ToListAsync();
                 return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -123,7 +123,7 @@ namespace RpgApi.Controllers
 
                 return Ok(novoPersonagem.Id);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -136,14 +136,14 @@ namespace RpgApi.Controllers
             {
                 if (novoPersonagem.PontosVida > 100)
                 {
-                    throw new System.Exception("Pontos de vida não pode ser maior que 100");
+                    throw new Exception("Pontos de vida não pode ser maior que 100");
                 }
                 _context.TB_PERSONAGENS.Update(novoPersonagem);
                 int linhasAfetadas = await _context.SaveChangesAsync();
 
                 return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -162,7 +162,7 @@ namespace RpgApi.Controllers
                 attach.Property(x => x.Id).IsModified = false;
                 attach.Property(x => x.FotoPersonagem).IsModified = true; int linhasAfetadas = await _context.SaveChangesAsync(); return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -176,12 +176,12 @@ namespace RpgApi.Controllers
                 int linhasAfetadas = 0;
                 Personagem pEncontrado = await _context.TB_PERSONAGENS.FirstOrDefaultAsync(pBusca => pBusca.Id == p.Id); pEncontrado.PontosVida = 100;
 
-                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p", pAtualizar => pAtualizar.PontosVida);
+                bool atualizou = await TryUpdateModelAsync(pEncontrado, "p", pAtualizar => pAtualizar.PontosVida);
 
                 linhasAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -198,13 +198,13 @@ namespace RpgApi.Controllers
                 pEncontrado.Derrotas = 0;
                 int linhasAfetadas = 0;
 
-                bool atualizou = await TryUpdateModelAsync<Personagem>(pEncontrado, "p", pAtualizar => pAtualizar.Disputas,
+                bool atualizou = await TryUpdateModelAsync(pEncontrado, "p", pAtualizar => pAtualizar.Disputas,
                 pAtualizar => pAtualizar.Vitorias,
                 pAtualizar => pAtualizar.Derrotas);
 
                 linhasAfetadas = await _context.SaveChangesAsync(); return Ok(linhasAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -224,7 +224,7 @@ namespace RpgApi.Controllers
                 }
                 return Ok("Disputas e pontos de vida resetados");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -241,7 +241,7 @@ namespace RpgApi.Controllers
                 int linhaAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhaAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -261,7 +261,7 @@ namespace RpgApi.Controllers
 
                 return Ok(p);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

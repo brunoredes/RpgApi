@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RpgApi.Models
+namespace RpgApi.api.Models
 {
     [Table("TB_DISPUTAS")]
     public class Disputa
@@ -26,10 +26,10 @@ namespace RpgApi.Models
         public int? HabilidadeId { get; set; }
 
         [NotMapped]
-        public List<int>? ListaIdPersonagem { get; set; }
+        public List<int> ListaIdPersonagem { get; set; }
 
         [NotMapped]
-        public List<string>? Resultados { get; set; }
+        public List<string> Resultados { get; set; }
 
     }
 }

@@ -1,4 +1,4 @@
-namespace RpgApi.Models.Enuns
+namespace RpgApi.api.Models.Enuns
 {
     public enum ClasseEnum
     {

@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RpgApi.Data;
-using RpgApi.Models;
+using RpgApi.api.Models;
+using RpgApi.api.Data;
 
-
-namespace RpgApi.Controllers
+namespace RpgApi.api.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
@@ -27,7 +26,7 @@ namespace RpgApi.Controllers
 
                 return Ok(a);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -42,7 +41,7 @@ namespace RpgApi.Controllers
                 List<Arma> lista = await _context.TB_ARMAS.ToListAsync();
                 return Ok(lista);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -75,7 +74,7 @@ namespace RpgApi.Controllers
 
                 return Ok(novaArma.Id);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -92,7 +91,7 @@ namespace RpgApi.Controllers
 
                 return Ok(linhaAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -110,7 +109,7 @@ namespace RpgApi.Controllers
 
                 return Ok(linhaAfetadas);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

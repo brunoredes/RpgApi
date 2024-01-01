@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RpgApi.Migrations
+namespace RpgApi.api.Migrations
 {
     /// <inheritdoc />
     public partial class test : Migration

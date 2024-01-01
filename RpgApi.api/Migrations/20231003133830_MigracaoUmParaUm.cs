@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace RpgApi.Migrations
+namespace RpgApi.api.Migrations
 {
     /// <inheritdoc />
     public partial class MigracaoUmParaUm : Migration

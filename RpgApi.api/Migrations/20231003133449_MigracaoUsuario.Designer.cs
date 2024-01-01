@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RpgApi.Data;
+using RpgApi.api.Data;
 
 #nullable disable
 
-namespace RpgApi.Migrations
+namespace RpgApi.api.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20231003133449_MigracaoUsuario")]
@@ -25,7 +25,7 @@ namespace RpgApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RpgApi.Models.Arma", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Arma", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Personagem", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Personagem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,7 +201,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Usuario", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,16 +261,16 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Personagem", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Personagem", b =>
                 {
-                    b.HasOne("RpgApi.Models.Usuario", "Usuario")
+                    b.HasOne("RpgApi.api.Models.Usuario", "Usuario")
                         .WithMany("Personagens")
                         .HasForeignKey("UsuarioId");
 
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Usuario", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Usuario", b =>
                 {
                     b.Navigation("Personagens");
                 });

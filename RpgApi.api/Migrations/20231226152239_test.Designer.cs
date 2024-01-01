@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RpgApi.Data;
+using RpgApi.api.Data;
 
 #nullable disable
 
-namespace RpgApi.Migrations
+namespace RpgApi.api.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20231226152239_test")]
@@ -25,7 +25,7 @@ namespace RpgApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RpgApi.Models.Arma", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Arma", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Disputa", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Disputa", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +131,7 @@ namespace RpgApi.Migrations
                     b.ToTable("TB_DISPUTAS");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Habilidade", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Habilidade", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +170,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Personagem", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Personagem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,7 +311,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.PersonagemHabilidade", b =>
+            modelBuilder.Entity("RpgApi.api.Models.PersonagemHabilidade", b =>
                 {
                     b.Property<int>("PersonagemId")
                         .HasColumnType("int");
@@ -373,7 +373,7 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Usuario", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -433,20 +433,20 @@ namespace RpgApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Arma", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Arma", b =>
                 {
-                    b.HasOne("RpgApi.Models.Personagem", "Personagem")
+                    b.HasOne("RpgApi.api.Models.Personagem", "Personagem")
                         .WithOne("Arma")
-                        .HasForeignKey("RpgApi.Models.Arma", "PersonagemId")
+                        .HasForeignKey("RpgApi.api.Models.Arma", "PersonagemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Personagem");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Personagem", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Personagem", b =>
                 {
-                    b.HasOne("RpgApi.Models.Usuario", "Usuario")
+                    b.HasOne("RpgApi.api.Models.Usuario", "Usuario")
                         .WithMany("Personagens")
                         .HasForeignKey("UsuarioId")
                         .HasConstraintName("FK_PERSONAGENS_USUARIO");
@@ -454,15 +454,15 @@ namespace RpgApi.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.PersonagemHabilidade", b =>
+            modelBuilder.Entity("RpgApi.api.Models.PersonagemHabilidade", b =>
                 {
-                    b.HasOne("RpgApi.Models.Habilidade", "Habilidade")
+                    b.HasOne("RpgApi.api.Models.Habilidade", "Habilidade")
                         .WithMany("PersonagemHabilidades")
                         .HasForeignKey("HabilidadeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RpgApi.Models.Personagem", "Personagem")
+                    b.HasOne("RpgApi.api.Models.Personagem", "Personagem")
                         .WithMany("PersonagemHabilidades")
                         .HasForeignKey("PersonagemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -473,19 +473,19 @@ namespace RpgApi.Migrations
                     b.Navigation("Personagem");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Habilidade", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Habilidade", b =>
                 {
                     b.Navigation("PersonagemHabilidades");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Personagem", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Personagem", b =>
                 {
                     b.Navigation("Arma");
 
                     b.Navigation("PersonagemHabilidades");
                 });
 
-            modelBuilder.Entity("RpgApi.Models.Usuario", b =>
+            modelBuilder.Entity("RpgApi.api.Models.Usuario", b =>
                 {
                     b.Navigation("Personagens");
                 });

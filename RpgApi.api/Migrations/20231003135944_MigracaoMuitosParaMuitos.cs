@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace RpgApi.Migrations
+namespace RpgApi.api.Migrations
 {
     /// <inheritdoc />
     public partial class MigracaoMuitosParaMuitos : Migration

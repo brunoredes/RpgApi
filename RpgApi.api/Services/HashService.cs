@@ -3,7 +3,7 @@ using System.Text;
 
 namespace RpgApi.api.Services
 {
-    public class HashService
+    public class HashService : IHashService
     {
         public byte[] HashPassword(string password, byte[] salt)
         {
